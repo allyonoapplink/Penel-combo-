@@ -1,0 +1,2481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App & Game Hub</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #ffffff;
+            color: #1f2937;
+            min-height: 100vh;
+            padding: 0 0 70px 0;
+            overflow-x: hidden;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f5b342;
+            border-radius: 8px;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #d1d5db;
+            min-height: 62px;
+        }
+        .top-bar .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #f5b342, #f7d875);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #1f2937;
+            font-size: 26px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-btn:hover {
+            background: #d1d5db;
+        }
+        .menu-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: #1f2937;
+        }
+
+        /* ===== SIDE MENU ===== */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            max-width: 80vw;
+            height: 100%;
+            background: #ffffff;
+            z-index: 200;
+            padding: 30px 24px;
+            transition: right 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: -8px 0 40px rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+            border-left: 1px solid #d1d5db;
+        }
+        .side-menu.open {
+            right: 0;
+        }
+        .side-menu .close-btn {
+            background: none;
+            border: none;
+            color: #1f2937;
+            font-size: 28px;
+            cursor: pointer;
+            float: right;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        .side-menu .close-btn:hover {
+            background: #d1d5db;
+        }
+        .side-menu .menu-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 12px 0 30px 0;
+            color: #f5b342;
+        }
+        .side-menu .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            font-size: 17px;
+            font-weight: 500;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            transition: color 0.2s, padding-left 0.2s;
+            cursor: pointer;
+        }
+        .side-menu .menu-item:hover {
+            color: #f5b342;
+            padding-left: 8px;
+        }
+        .side-menu .menu-item:last-child {
+            border-bottom: none;
+        }
+        .side-menu .menu-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 150;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s;
+        }
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ===== PAGE CONTAINER ===== */
+        .page {
+            display: none;
+            padding: 16px 14px 30px;
+            animation: fadeUp 0.3s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== HOME PAGE ===== */
+        .home-header {
+            text-align: center;
+            padding: 18px 0 12px;
+        }
+        .home-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f5b342, #f7d875);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .home-header p {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .home-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        /* ===== APP CARD ===== */
+        .app-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 12px 12px 14px;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-card:active {
+            transform: scale(0.97);
+        }
+        .app-card .badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #f5b342;
+            color: #1f2937;
+            font-size: 11px;
+            font-weight: 700;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(245, 179, 66, 0.4);
+        }
+        .app-card .card-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f3f4f6;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .app-card .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .app-card .card-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            line-height: 1.3;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 36px;
+        }
+        .app-card .card-bonus {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #f5b342;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .app-card .card-bonus svg {
+            width: 16px;
+            height: 16px;
+            fill: #f5b342;
+            flex-shrink: 0;
+        }
+        .app-card .card-withdrawal {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+        .app-card .card-withdrawal svg {
+            width: 14px;
+            height: 14px;
+            fill: #6b7280;
+            flex-shrink: 0;
+        }
+        .app-card .download-btn {
+            background: linear-gradient(135deg, #f5b342, #e6a130);
+            border: none;
+            color: #1f2937;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+        .app-card .download-btn:active {
+            transform: scale(0.96);
+            opacity: 0.85;
+        }
+
+        /* ===== DETAILS PAGE ===== */
+        .details-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #f5b342;
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 6px 0 14px;
+            border: none;
+            background: none;
+        }
+        .details-back svg {
+            width: 20px;
+            height: 20px;
+            fill: #f5b342;
+        }
+        .details-top {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px 18px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 18px;
+        }
+        .details-top .dt-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .details-top .dt-img {
+            width: 100px;
+            min-width: 100px;
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+        }
+        .details-top .dt-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .details-top .dt-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .details-top .dt-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .details-top .dt-bonus {
+            display: flex;
+            white-space: nowrap;
+            align-items: center;
+            gap: 6px;
+            font-size: 16px;
+            color: #f5b342;
+            font-weight: 600;
+        }
+        .details-top .dt-bonus svg {
+            width: 18px;
+            height: 18px;
+            fill: #f5b342;
+        }
+        .details-top .dt-withdrawal {
+            display: flex;
+            white-space: nowrap;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+        .details-top .dt-withdrawal svg {
+            width: 16px;
+            height: 16px;
+            fill: #6b7280;
+        }
+        .details-top .dt-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .details-top .dt-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .details-top .dt-stats svg {
+            width: 16px;
+            height: 16px;
+            fill: #6b7280;
+            flex-shrink: 0;
+        }
+        .details-top .dt-stats strong {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .dt-download-wrap {
+            margin: 16px 0 0;
+        }
+        .dt-download-wrap .download-btn {
+            background: linear-gradient(135deg, #f5b342, #e6a130);
+            border: none;
+            color: #1f2937;
+            font-weight: 700;
+            font-size: 17px;
+            padding: 14px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+        .dt-download-wrap .download-btn:active {
+            transform: scale(0.97);
+            opacity: 0.85;
+        }
+
+        /* ===== INFO BAG ===== */
+        .info-bag {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 18px 16px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+        .info-bag .bag-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        .info-bag .bag-head svg {
+            width: 22px;
+            height: 22px;
+            fill: #f5b342;
+            flex-shrink: 0;
+        }
+        .info-bag .bag-body {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #4b5563;
+        }
+        .info-bag .bag-body p {
+            margin-bottom: 10px;
+        }
+        .info-bag .bag-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== RELATED APPS ===== */
+        .related-head {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 24px 0 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+        .related-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 10px 10px 12px;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .related-card:active {
+            transform: scale(0.97);
+        }
+        .related-card .rc-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f3f4f6;
+            margin-bottom: 8px;
+        }
+        .related-card .rc-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .related-card .rc-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1f2937;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 30px;
+            margin-bottom: 4px;
+        }
+        .related-card .rc-bonus {
+            font-size: 11px;
+            color: #f5b342;
+            font-weight: 500;
+        }
+        .related-card .rc-btn {
+            background: linear-gradient(135deg, #f5b342, #e6a130);
+            border: none;
+            color: #1f2937;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 7px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 6px;
+            text-align: center;
+            transition: opacity 0.2s;
+        }
+        .related-card .rc-btn:active {
+            opacity: 0.8;
+        }
+
+        /* ===== BEST INFO ===== */
+        .best-head {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 28px 0 14px;
+        }
+        .best-item {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 10px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .best-item .best-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            color: #1f2937;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            gap: 12px;
+        }
+        .best-item .best-toggle .left-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        .best-item .best-toggle .left-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #f5b342;
+            flex-shrink: 0;
+        }
+        .best-item .best-toggle .icon-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .best-item .best-toggle .icon-wrap svg {
+            width: 20px;
+            height: 20px;
+            fill: #f5b342;
+            transition: transform 0.3s;
+        }
+        .best-item .best-toggle .icon-wrap .collapse-icon {
+            display: none;
+        }
+        .best-item.open .best-toggle .icon-wrap .expand-icon {
+            display: none;
+        }
+        .best-item.open .best-toggle .icon-wrap .collapse-icon {
+            display: block;
+        }
+        .best-item .best-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 16px;
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        .best-item.open .best-content {
+            max-height: 800px;
+            padding: 0 16px 18px;
+        }
+
+        /* ===== REVIEWS CAROUSEL ===== */
+        .reviews-head {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 28px 0 14px;
+        }
+        .reviews-wrap {
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            padding: 4px 2px 12px;
+            display: flex;
+            gap: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: #f5b342 #f3f4f6;
+        }
+        .reviews-wrap::-webkit-scrollbar {
+            height: 4px;
+        }
+        .reviews-wrap::-webkit-scrollbar-thumb {
+            background: #f5b342;
+            border-radius: 8px;
+        }
+        .review-card {
+            flex: 0 0 260px;
+            scroll-snap-align: start;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 18px 16px 16px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-width: 240px;
+        }
+        .review-card .stars {
+            color: #f5b342;
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        .review-card .r-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4b5563;
+            flex: 1;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .review-card .r-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 6px 0 10px;
+        }
+        .review-card .r-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .review-card .r-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f5b342;
+            color: #1f2937;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .review-card .r-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1f2937;
+        }
+        .review-card .r-verified {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .review-card .r-verified svg {
+            width: 14px;
+            height: 14px;
+            fill: #4caf50;
+            flex-shrink: 0;
+        }
+
+        /* ===== STATIC PAGES (About, Contact, etc) ===== */
+        .static-page {
+            padding: 16px 0;
+        }
+        .static-page h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #f5b342, #f7d875);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .static-page p,
+        .static-page li {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #4b5563;
+            margin-bottom: 12px;
+        }
+        .static-page ul {
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+        .static-page li {
+            margin-bottom: 6px;
+        }
+        .static-page .spacer {
+            height: 16px;
+        }
+        .static-page .info-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 18px 16px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+
+        /* ===== TELEGRAM FLOATING ICON ===== */
+        .telegram-float {
+            position: fixed;
+            top: 112px;
+            right: 6px;
+            width: 72px;
+            min-height: 54px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            border-radius: 0;
+            z-index: 110;
+            cursor: pointer;
+            transition: opacity .28s ease, transform .28s ease;
+            transform-origin: right center;
+            white-space: nowrap;
+        }
+        .telegram-float svg {
+            width: 28px;
+            height: 28px;
+            display: block;
+            flex: 0 0 auto;
+        }
+        .telegram-float .telegram-label {
+            display: block;
+            font-size: 10px;
+            line-height: 1.15;
+            font-weight: 800;
+            letter-spacing: .1px;
+            color: #229ED9;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(34,158,217,.12);
+        }
+        .telegram-float.hide-telegram {
+            opacity: 0;
+            transform: translateX(18px) scale(.92);
+            pointer-events: none;
+        }
+
+        .feature-icon {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            min-width: 13px;
+            flex: 0 0 13px;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            vertical-align: middle;
+        }
+        .gift-icon { color: #f5b342; }
+        .wallet-icon { color: #6b7280; }
+        .details-top .feature-icon { width: 17px; height: 17px; min-width: 17px; flex-basis: 17px; }
+        .related-card .feature-icon { width: 11px; height: 11px; min-width: 11px; flex-basis: 11px; margin-right: 3px; }
+
+        /* ===== APP / RELATED THREE-LINE LAYOUT ===== */
+        .app-card .card-name {
+            white-space: nowrap;
+            width: 100%;
+            text-overflow: clip;
+            overflow: visible;
+            display: block;
+            min-height: 18px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            line-height: 1.25;
+        }
+        .app-card .card-bonus,
+        .app-card .card-withdrawal {
+            white-space: nowrap;
+            width: 100%;
+            overflow: visible;
+            text-overflow: clip;
+            gap: 3px;
+            line-height: 1.25;
+        }
+        .app-card .card-bonus { font-size: 11px; margin-bottom: 3px; }
+        .app-card .card-withdrawal { font-size: 10.5px; margin-bottom: 9px; }
+        .app-card .card-bonus svg { width: 13px; height: 13px; }
+        .app-card .card-withdrawal svg { width: 12px; height: 12px; }
+
+        .related-card .rc-name {
+            white-space: nowrap;
+            text-overflow: clip;
+            overflow: visible;
+            display: block;
+            min-height: 15px;
+            margin-bottom: 4px;
+            font-size: 11px;
+            line-height: 1.2;
+        }
+        .related-card .rc-bonus,
+        .related-card .rc-withdrawal {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.2;
+        }
+        .related-card .rc-bonus { font-size: 10px; margin-bottom: 2px; }
+        .related-card .rc-withdrawal { font-size: 9.5px; color: #6b7280; margin-bottom: 4px; }
+
+        @media (max-width: 480px) {
+            .telegram-float { top: 104px; right: 4px; width: 66px; min-height: 50px; }
+            .telegram-float svg { width: 24px; height: 24px; }
+            .telegram-float .telegram-label { font-size: 9px; }
+            .app-card .card-name { font-size: 11.5px; }
+            .app-card .card-bonus { font-size: 10.5px; }
+            .app-card .card-withdrawal { font-size: 10px; }
+            .related-card .rc-name { font-size: 10.5px; }
+            .related-card .rc-bonus { font-size: 9.5px; }
+            .related-card .rc-withdrawal { font-size: 9px; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .home-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+            .related-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 10px;
+            }
+            .details-top .dt-row {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .details-top .dt-img {
+                width: 120px;
+                min-width: 120px;
+            }
+            .details-top .dt-stats {
+                justify-content: center;
+            }
+            .details-top .dt-bonus {
+                justify-content: center;
+            }
+            .details-top .dt-withdrawal {
+                justify-content: center;
+            }
+            .review-card {
+                flex: 0 0 230px;
+                min-width: 200px;
+            }
+        }
+        @media (min-width: 768px) {
+            .home-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            .related-grid {
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+                gap: 18px;
+            }
+            body {
+                padding: 0 20px 70px;
+            }
+            .page {
+                padding: 20px 0 30px;
+            }
+            .details-top .dt-img {
+                width: 140px;
+                min-width: 140px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .home-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 24px;
+            }
+            .related-grid {
+                grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        /* ===== UTILITY ===== */
+        .text-gold {
+            color: #f5b342;
+        }
+        .text-muted {
+            color: #6b7280;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gap-4 {
+            gap: 4px;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* loader placeholder */
+        .loader-placeholder {
+            text-align: center;
+            padding: 40px 0;
+            color: #6b7280;
+        }
+
+        /* back button on details */
+        .back-btn-wrap {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOP BAR ===== -->
+    <header class="top-bar">
+        <span class="logo">🎯 GameHub</span>
+        <button class="menu-btn" id="menuToggle" aria-label="Open menu">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+        </button>
+    </header>
+
+    <!-- ===== TELEGRAM FLOATING ICON ===== -->
+    <a class="telegram-float" id="telegramFloat" href="https://t.me/allyonogamesinfo" target="_blank" rel="noopener noreferrer" aria-label="Join Telegram">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+            <circle cx="24" cy="24" r="24" fill="#229ED9"/>
+            <path d="M34.8 13.7 10.6 23.1c-1.2.47-1.18 2.18.03 2.61l6.18 2.19 2.25 7.02c.37 1.15 1.81 1.43 2.86.63l3.69-2.82 4.9 3.65c1.02.76 2.47.24 2.76-1l4.03-20.02c.28-1.39-.77-2.28-2.5-1.65Zm-3.1 4.22-10.4 8.86-1.53 4.72-1.22-3.99 11.35-9.41c.53-.44 1.16-.99 1.8-.18Z" fill="#fff"/>
+        </svg>
+        <span class="telegram-label">Join Telegram</span>
+    </a>
+
+    <!-- ===== SIDE MENU OVERLAY ===== -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- ===== SIDE MENU ===== -->
+    <nav class="side-menu" id="sideMenu">
+        <button class="close-btn" id="menuClose" aria-label="Close menu">✕</button>
+        <div class="menu-title">Menu</div>
+        <span class="menu-item" data-page="home">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Home
+        </span>
+        <span class="menu-item" data-page="about">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            About
+        </span>
+        <span class="menu-item" data-page="contact">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            Contact
+        </span>
+        <span class="menu-item" data-page="disclaimer">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5L12 1zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            Disclaimer
+        </span>
+        <span class="menu-item" data-page="privacy">
+            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            Privacy Policy
+        </span>
+    </nav>
+
+    <!-- ===== PAGE: HOME ===== -->
+    <div class="page active" id="page-home">
+        <div class="home-header">
+            <h1>All Apps & Games</h1>
+            <p>74 premium apps · Download & play</p>
+        </div>
+        <div class="home-grid" id="homeGrid"></div>
+    </div>
+
+    <!-- ===== PAGE: DETAILS (dynamic) ===== -->
+    <div class="page" id="page-details">
+        <div class="back-btn-wrap">
+            <button class="details-back" id="detailsBack">
+                <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                Back
+            </button>
+        </div>
+        <div id="detailsContent"></div>
+    </div>
+
+    <!-- ===== PAGE: ABOUT ===== -->
+    <div class="page" id="page-about">
+        <div class="static-page">
+            <h2>About Us</h2>
+            <div class="info-box">
+                <p><strong>Welcome to GameHub</strong> — your premium destination for discovering and downloading the best apps and games available today.</p>
+                <p>We curate a diverse collection of <strong>74 original apps and games</strong>, ranging from thrilling slots and classic rummy to immersive teen patti and arcade experiences. Our platform is designed to help you find your next favorite game with ease.</p>
+                <p>Every app featured on our site has been carefully selected and presented with its original name, image, and download link. We believe in <strong>transparent, user-friendly navigation</strong> so you can quickly browse, compare, and download the apps that interest you most.</p>
+                <p>Our mission is to provide a <strong>clean, fast, and premium browsing experience</strong> — whether you're on your phone, tablet, or desktop. We prioritize mobile-first design and Android compatibility, ensuring smooth performance across all devices.</p>
+                <p>Explore our full collection of 74 apps, each with detailed information, unique bonuses, and real user ratings. Start your journey with GameHub today!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: CONTACT ===== -->
+    <div class="page" id="page-contact">
+        <div class="static-page">
+            <h2>Contact Us</h2>
+            <div class="info-box">
+                <p>Have questions, feedback, or need support? We're here to help.</p>
+                <p><strong>General Support:</strong> For any issues related to app downloads, navigation, or general inquiries, please reach out to us through our support channels.</p>
+                <p><strong>App-Specific Queries:</strong> For questions about specific apps, bonuses, or gameplay, we recommend contacting the app developers directly via the links provided on each app's detail page.</p>
+                <p><strong>Responsible Communication:</strong> We value respectful and constructive communication. Please ensure your queries are clear and relevant to our platform.</p>
+                <p>While we strive to respond promptly, response times may vary. We appreciate your patience and understanding.</p>
+                <p style="margin-top:12px;"><span class="text-gold">📧</span> <strong>Email:</strong> <span class="text-muted">support@gamehub.com</span></p>
+                <p><span class="text-gold">🕐</span> <strong>Response Time:</strong> Typically within 24–48 hours.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: DISCLAIMER ===== -->
+    <div class="page" id="page-disclaimer">
+        <div class="static-page">
+            <h2>Disclaimer</h2>
+            <div class="info-box">
+                <p><strong>Information Accuracy:</strong> We strive to keep all app information, including names, images, and download links, accurate and up to date. However, we cannot guarantee that every detail is error-free. Please verify app details directly with the official sources.</p>
+                <p><strong>Third-Party Applications:</strong> All apps and games listed on GameHub are developed and maintained by third-party entities. We do not own, operate, or control any of the featured applications.</p>
+                <p><strong>External APK Links:</strong> Download links are provided for convenience and reference. We are not responsible for the safety, security, or legality of third-party websites or APK files. Download and use apps at your own risk.</p>
+                <p><strong>User Responsibility:</strong> Users are solely responsible for ensuring that any app they download and use complies with local laws, device compatibility, and personal preferences.</p>
+                <p><strong>Real-Money Participation Risk:</strong> Some apps may involve real-money transactions, betting, or gambling elements. Participation in such activities carries financial risk. Users should exercise caution, set limits, and only participate if legally permitted in their jurisdiction.</p>
+                <p><strong>No Guarantees:</strong> We do not guarantee winnings, withdrawals, bonuses, or any financial outcomes. All bonuses, promotions, and withdrawal terms are subject to the respective app's policies.</p>
+                <p><strong>Platform Responsibility Limitations:</strong> GameHub acts as an informational directory only. We are not liable for any losses, damages, or issues arising from the use of any third-party app or service.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PAGE: PRIVACY POLICY ===== -->
+    <div class="page" id="page-privacy">
+        <div class="static-page">
+            <h2>Privacy Policy</h2>
+            <div class="info-box">
+                <p><strong>Information Collection:</strong> GameHub does not collect, store, or share any personally identifiable information (PII) unless voluntarily provided by the user (e.g., via contact forms).</p>
+                <p><strong>Basic Usage Data:</strong> We may collect anonymized, non-personal usage data to improve our website experience. This may include device type, browser version, and page interaction metrics.</p>
+                <p><strong>Cookies & Storage:</strong> We may use lightweight local storage or session cookies to remember your preferences and enhance navigation. No sensitive data is stored.</p>
+                <p><strong>User Privacy:</strong> We respect your privacy. We do not sell, trade, or rent any user information to third parties.</p>
+                <p><strong>Third-Party Links:</strong> Our website contains external links to third-party app download pages. We are not responsible for the privacy practices or content of these external sites.</p>
+                <p><strong>Security Practices:</strong> We implement reasonable security measures to protect against unauthorized access, alteration, or misuse of any data we may collect.</p>
+                <p><strong>Updates:</strong> This Privacy Policy may be updated occasionally. Please check back for the latest version.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // =====================================================
+        // DATA — 74 ORIGINAL APPS/GAMES
+        // =====================================================
+        const EMBEDDED_APPS_DATA = [{
+            id: 1,
+            name: "YONO NEW APP",
+            image: "https://i.ibb.co/0RZPw4wH/Screenshot-20260814-093236.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹250",
+            category: "slots",
+            size: "32.7 MB",
+            downloads: "54,320+",
+            votes: "13,840+"
+        }, {
+            id: 2,
+            name: "567 SLOTS",
+            image: "https://i.ibb.co/QWVBtNG/Screenshot-20260814-045334.jpg",
+            link: "https://join567slots0.com/?code=4NYF487URJ6&t=1781505684",
+            bonus: "₹300",
+            category: "slots",
+            size: "28.1 MB",
+            downloads: "47,890+",
+            votes: "11,230+"
+        }, {
+            id: 3,
+            name: "SAGA SLOTS",
+            image: "https://i.ibb.co/k20yYCYZ/Screenshot-20260814-045747.jpg",
+            link: "https://www.sagaslots5.com/?code=0QHJSERZYMV&t=1781505813",
+            bonus: "₹275",
+            category: "slots",
+            size: "34.2 MB",
+            downloads: "38,450+",
+            votes: "9,670+"
+        }, {
+            id: 4,
+            name: "JAIHO 91",
+            image: "https://i.ibb.co/bnQfcCV/Screenshot-20260814-045233.jpg",
+            link: "https://jaiho91bonus.vip/?code=C42T99ZQHAT&t=1781506067",
+            bonus: "₹400",
+            category: "rummy",
+            size: "26.8 MB",
+            downloads: "62,100+",
+            votes: "15,400+"
+        }, {
+            id: 5,
+            name: "RUMMY LUDO",
+            image: "https://i.ibb.co/JR326qDL/Screenshot-20260814-050655.jpg",
+            link: "https://rummyludoapp37.com/",
+            bonus: "₹150",
+            category: "rummy",
+            size: "30.5 MB",
+            downloads: "41,780+",
+            votes: "10,550+"
+        }, {
+            id: 6,
+            name: "ABC RUMMY",
+            image: "https://i.ibb.co/CKxFgdKB/Screenshot-20260814-050911.jpg",
+            link: "https://d34i569g8ztoql.cloudfront.net/abcrummy_MeApp.apk",
+            bonus: "₹200",
+            category: "rummy",
+            size: "27.3 MB",
+            downloads: "35,220+",
+            votes: "8,910+"
+        }, {
+            id: 7,
+            name: "RUMMY 91",
+            image: "https://i.ibb.co/ymwjhMwy/Screenshot-20260814-051214.jpg",
+            link: "https://d16sfv4ssrmnvt.cloudfront.net/rummy91_AGENT.apk",
+            bonus: "₹225",
+            category: "rummy",
+            size: "29.0 MB",
+            downloads: "44,560+",
+            votes: "12,300+"
+        }, {
+            id: 8,
+            name: "LOVE RUMMY",
+            image: "https://i.ibb.co/FkzpZCrk/Screenshot-20260814-051426.jpg",
+            link: "https://d34i569g8ztoql.cloudfront.net/loverummy_App.apk",
+            bonus: "₹180",
+            category: "rummy",
+            size: "31.2 MB",
+            downloads: "39,870+",
+            votes: "10,010+"
+        }, {
+            id: 9,
+            name: "SPIN CRUSH",
+            image: "https://i.ibb.co/M5cLBLc1/Screenshot-20260814-034836.jpg",
+            link: "https://d292swwe9zki3u.cloudfront.net/spincrush_freecash.apk",
+            bonus: "₹350",
+            category: "slots",
+            size: "33.8 MB",
+            downloads: "51,200+",
+            votes: "14,500+"
+        }, {
+            id: 10,
+            name: "TOP RUMMY",
+            image: "https://i.ibb.co/9mwHZbCp/Screenshot-20260814-051751.jpg",
+            link: "https://th7.my/BY1JWS/3gvute0",
+            bonus: "₹275",
+            category: "rummy",
+            size: "25.6 MB",
+            downloads: "33,440+",
+            votes: "8,220+"
+        }, {
+            id: 11,
+            name: "Hello Rummy",
+            image: "https://i.ibb.co/ksXtjTVp/Screenshot-20260814-052023.jpg",
+            link: "https://www.earntp.com/gold/jm9n7r",
+            bonus: "₹160",
+            category: "rummy",
+            size: "28.9 MB",
+            downloads: "36,900+",
+            votes: "9,430+"
+        }, {
+            id: 12,
+            name: "RUMMY 365",
+            image: "https://i.ibb.co/jvpGswXD/Screenshot-20260814-052223.jpg",
+            link: "https://join567slots0.com/?code=4NYF487URJ6&t=1781505684",
+            bonus: "₹320",
+            category: "rummy",
+            size: "30.1 MB",
+            downloads: "46,330+",
+            votes: "11,890+"
+        }, {
+            id: 13,
+            name: "TEEN PATTI GOLD",
+            image: "https://i.ibb.co/m5sHK3ys/Screenshot-20260814-052420.jpg",
+            link: "https://www.earntp.com/gold/jm9n7r",
+            bonus: "₹500",
+            category: "teenpatti",
+            size: "35.4 MB",
+            downloads: "68,750+",
+            votes: "18,200+"
+        }, {
+            id: 14,
+            name: "TEEN PATTI MASTER",
+            image: "https://i.ibb.co/cXkXTDPR/Screenshot-20260814-052628.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹450",
+            category: "teenpatti",
+            size: "32.0 MB",
+            downloads: "59,880+",
+            votes: "16,400+"
+        }, {
+            id: 15,
+            name: "YONO RUMMY",
+            image: "https://i.ibb.co/b5THXzC7/Screenshot-20260814-040920.jpg",
+            link: "https://yonorummy043.com/?code=VIPYQC5EE9X&t=1781107758",
+            bonus: "₹210",
+            category: "rummy",
+            size: "27.8 MB",
+            downloads: "42,150+",
+            votes: "10,760+"
+        }, {
+            id: 16,
+            name: "SLOTS WINNER",
+            image: "https://i.ibb.co/wNT5cZ1k/Screenshot-20260814-041656.jpg",
+            link: "https://slotswinneri.com/?code=PGVC6CBNF53&t=1781107393",
+            bonus: "₹380",
+            category: "slots",
+            size: "31.6 MB",
+            downloads: "49,220+",
+            votes: "13,100+"
+        }, {
+            id: 17,
+            name: "GOOD SLOTS",
+            image: "https://i.ibb.co/Hpk3dp9X/Screenshot-20260814-053030.jpg",
+            link: "https://7sharegoodslots.vip?pid=320806209&channel=2010001&t=pdd2&pkg=com.1",
+            bonus: "₹260",
+            category: "slots",
+            size: "29.4 MB",
+            downloads: "37,660+",
+            votes: "9,110+"
+        }, {
+            id: 18,
+            name: "Diwa Slot",
+            image: "https://i.ibb.co/2zv2Nyy/Screenshot-20260814-053408.jpg",
+            link: "https://sharediwaslot1.vip?pid=483455673&channel=2010002&t=pdd2&pkg=com.diwaslotwhl.app",
+            bonus: "₹340",
+            category: "slots",
+            size: "33.0 MB",
+            downloads: "44,890+",
+            votes: "12,550+"
+        }, {
+            id: 19,
+            name: "GOGO RUMMY",
+            image: "https://i.ibb.co/RTwyQ4tF/Screenshot-20260814-053625.jpg",
+            link: "https://www.gogorummyagent.com/?code=V4UTQA2VYMQ&t=1781196694",
+            bonus: "₹190",
+            category: "rummy",
+            size: "26.2 MB",
+            downloads: "34,780+",
+            votes: "8,670+"
+        }, {
+            id: 20,
+            name: "JOY RUMMY",
+            image: "https://i.ibb.co/SCc42Cp/Screenshot-20260814-053827.jpg",
+            link: "https://www.joyrummymax.com/?code=J5KFTAWJ9X5&t=1781198100",
+            bonus: "₹230",
+            category: "rummy",
+            size: "28.5 MB",
+            downloads: "40,560+",
+            votes: "10,330+"
+        }, {
+            id: 21,
+            name: "SPIN GOLD",
+            image: "https://i.ibb.co/0yd0J3dy/Screenshot-20260814-030656.jpg",
+            link: "https://uono-bingo101.com/?code=3WFQ231H9Y2&t=1781197828",
+            bonus: "₹420",
+            category: "slots",
+            size: "32.4 MB",
+            downloads: "52,780+",
+            votes: "14,900+"
+        }, {
+            id: 22,
+            name: "BINGO 101",
+            image: "https://i.ibb.co/Xk2wP9Nk/Screenshot-20260814-034121.jpg",
+            link: "https://uono-bingo101.com/?code=3WFQ231H9Y2&t=1781197828",
+            bonus: "₹150",
+            category: "bingo",
+            size: "25.9 MB",
+            downloads: "31,220+",
+            votes: "7,560+"
+        }, {
+            id: 23,
+            name: "YES SPIN",
+            image: "https://i.ibb.co/60hFLZzw/Screenshot-20260814-054324.jpg",
+            link: "https://www.yesspineee.com/?code=47TXJTLU5YY&t=1781198907",
+            bonus: "₹280",
+            category: "slots",
+            size: "30.8 MB",
+            downloads: "43,450+",
+            votes: "11,200+"
+        }, {
+            id: 24,
+            name: "YONO ARCADE",
+            image: "https://i.ibb.co/R4hkwzbW/Screenshot-20260814-040720.jpg",
+            link: "https://yonoarcadeapk9.com/?code=96LNEL9FQXZ&t=1781199006",
+            bonus: "₹200",
+            category: "arcade",
+            size: "36.2 MB",
+            downloads: "48,100+",
+            votes: "12,880+"
+        }, {
+            id: 25,
+            name: "SVIP 777",
+            image: "https://i.ibb.co/MyQvt1R2/Screenshot-20260814-054554.jpg",
+            link: "https://www.svip777.life?pid=297924008&channel=2050001&t=pdd2&pkg=com.svip777.h5",
+            bonus: "₹500",
+            category: "slots",
+            size: "34.7 MB",
+            downloads: "66,540+",
+            votes: "17,300+"
+        }, {
+            id: 26,
+            name: "OK RUMMY",
+            image: "https://i.ibb.co/xKhB5qzg/Screenshot-20260814-054736.jpg",
+            link: "https://www.okrummy22.com/?code=H2GU92WUXXA&t=1781199220",
+            bonus: "₹175",
+            category: "rummy",
+            size: "27.1 MB",
+            downloads: "35,990+",
+            votes: "9,040+"
+        }, {
+            id: 27,
+            name: "HINDI 777",
+            image: "https://i.ibb.co/pvtCPtTT/Screenshot-20260814-055304.jpg",
+            link: "https://www.hindi777agent5.com/?code=7LFFR8WPHEG&t=1781199307",
+            bonus: "₹310",
+            category: "slots",
+            size: "29.7 MB",
+            downloads: "40,230+",
+            votes: "10,110+"
+        }, {
+            id: 28,
+            name: "BET 213",
+            image: "https://i.ibb.co/6c3k7wdG/Screenshot-20260814-055545.jpg",
+            link: "https://www.bet213.rocks/?code=2QTKPV4BYDH&t=1781199576",
+            bonus: "₹400",
+            category: "betting",
+            size: "31.8 MB",
+            downloads: "56,780+",
+            votes: "14,600+"
+        }, {
+            id: 29,
+            name: "BOSS RUMMY",
+            image: "https://i.ibb.co/jvwscPDf/Screenshot-20260814-055812.jpg",
+            link: "https://www.bossrummyy.com/?code=LSHTVUZE1NR&t=1781429504",
+            bonus: "₹260",
+            category: "rummy",
+            size: "28.0 MB",
+            downloads: "38,440+",
+            votes: "9,880+"
+        }, {
+            id: 30,
+            name: "YONO 777",
+            image: "https://i.ibb.co/v4G1fQtr/Screenshot-20260814-060203.jpg",
+            link: "https://uono777refer.vip/?code=F9MPSLKZCV9&t=1781429388",
+            bonus: "₹450",
+            category: "slots",
+            size: "33.5 MB",
+            downloads: "61,200+",
+            votes: "15,900+"
+        }, {
+            id: 31,
+            name: "Diwa VIP",
+            image: "https://i.ibb.co/6RQ2tGnw/Screenshot-20260814-060417.jpg",
+            link: "https://uono777refer.vip/?code=F9MPSLKZCV9&t=1781429388",
+            bonus: "₹500",
+            category: "vip",
+            size: "35.0 MB",
+            downloads: "72,450+",
+            votes: "19,100+"
+        }, {
+            id: 32,
+            name: "Diwa 777",
+            image: "https://i.ibb.co/hFNKBdvq/Screenshot-20260814-060707.jpg",
+            link: "https://sharediwa7771.top?pid=287747863&channel=2010001&t=pdd2&pkg=com.diwa777.app",
+            bonus: "₹330",
+            category: "slots",
+            size: "30.3 MB",
+            downloads: "46,780+",
+            votes: "12,440+"
+        }, {
+            id: 33,
+            name: "YONO GAMES",
+            image: "https://i.ibb.co/Gf0fxYQ4/Screenshot-20260814-040510.jpg",
+            link: "https://yonogamesm.com/?code=LHS49AEHVMR&t=1784314209",
+            bonus: "₹220",
+            category: "games",
+            size: "37.1 MB",
+            downloads: "53,200+",
+            votes: "13,760+"
+        }, {
+            id: 34,
+            name: "INR RUMMY",
+            image: "https://i.ibb.co/hJpHMvPg/Screenshot-20260814-061018.jpg",
+            link: "https://inrrummy.club/?code=JMQBV8TAPD7&t=1784298106",
+            bonus: "₹195",
+            category: "rummy",
+            size: "26.5 MB",
+            downloads: "33,890+",
+            votes: "8,450+"
+        }, {
+            id: 35,
+            name: "MBM BET",
+            image: "https://i.ibb.co/0j53Gb5W/Screenshot-20260814-042359.jpg",
+            link: "https://www.mbmbet3.com/?code=GD3H3VA6YK5&t=1784297830",
+            bonus: "₹370",
+            category: "betting",
+            size: "32.2 MB",
+            downloads: "50,670+",
+            votes: "13,300+"
+        }, {
+            id: 36,
+            name: "GOA SPIN",
+            image: "https://i.ibb.co/jkQ5z96x/Screenshot-20260814-033551.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹290",
+            category: "slots",
+            size: "28.8 MB",
+            downloads: "41,560+",
+            votes: "10,880+"
+        }, {
+            id: 37,
+            name: "777 GAME",
+            image: "https://i.ibb.co/tMJ0L7L8/1786658176260.jpg",
+            link: "https://t.me/yonogamestite",
+            bonus: "₹150",
+            category: "slots",
+            size: "25.4 MB",
+            downloads: "30,100+",
+            votes: "7,200+"
+        }, {
+            id: 38,
+            name: "TEEN PATTI",
+            image: "https://i.ibb.co/fzmMFV0F/Screenshot-20260814-061532.jpg",
+            link: "https://www.earntp.com/gold/jm9n7r",
+            bonus: "₹350",
+            category: "teenpatti",
+            size: "31.0 MB",
+            downloads: "55,440+",
+            votes: "14,200+"
+        }, {
+            id: 39,
+            name: "All YONO GAMES",
+            image: "https://i.ibb.co/cKc56vJj/Screenshot-20260814-061719.jpg",
+            link: "https://www.earntp.com/gold/jm9n7r",
+            bonus: "₹250",
+            category: "games",
+            size: "38.0 MB",
+            downloads: "58,900+",
+            votes: "15,300+"
+        }, {
+            id: 40,
+            name: "NEW YONO GAMES",
+            image: "https://i.ibb.co/R4hkwzbW/Screenshot-20260814-062237.jpg",
+            link: "https://t.me/yonogamestite",
+            bonus: "₹280",
+            category: "games",
+            size: "36.4 MB",
+            downloads: "49,330+",
+            votes: "12,670+"
+        }, {
+            id: 41,
+            name: "YONO APPS",
+            image: "https://i.ibb.co/DfQgSYrP/Screenshot-20260814-061950.jpg",
+            link: "https://t.me/yonogamestite",
+            bonus: "₹200",
+            category: "apps",
+            size: "34.1 MB",
+            downloads: "44,780+",
+            votes: "11,450+"
+        }, {
+            id: 42,
+            name: "SPIN WINNER",
+            image: "https://i.ibb.co/PZNRbCwk/Screenshot-20260814-034801.jpg",
+            link: "https://www.yesspineee.com/?code=47TXJTLU5YY&t=1781198907",
+            bonus: "₹390",
+            category: "slots",
+            size: "30.6 MB",
+            downloads: "47,220+",
+            votes: "12,100+"
+        }, {
+            id: 43,
+            name: "YONO All GAMES",
+            image: "https://i.ibb.co/TMJwF88r/Screenshot-20260814-031654.jpg",
+            link: "https://diwavipshare.cc?pid=428256719&channel=2050001&t=pdd2&pkg=com.diwavip.h5",
+            bonus: "₹320",
+            category: "games",
+            size: "39.2 MB",
+            downloads: "63,400+",
+            votes: "16,800+"
+        }, {
+            id: 44,
+            name: "SPIN LUCKY",
+            image: "https://i.ibb.co/Q7YCZLWP/Screenshot-20260814-041943.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹270",
+            category: "slots",
+            size: "29.1 MB",
+            downloads: "39,780+",
+            votes: "10,020+"
+        }, {
+            id: 45,
+            name: "MAX RUMMY",
+            image: "https://i.ibb.co/xKH8Zz6C/Screenshot-20260814-032014.jpg",
+            link: "https://www.maxrummy66.com/?code=QUMWTJCMZ5N&t=1784912540",
+            bonus: "₹240",
+            category: "rummy",
+            size: "27.9 MB",
+            downloads: "37,560+",
+            votes: "9,560+"
+        }, {
+            id: 46,
+            name: "RANI SLOTS",
+            image: "https://i.ibb.co/jZMq58Pc/Screenshot-20260814-063312.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹310",
+            category: "slots",
+            size: "31.4 MB",
+            downloads: "42,890+",
+            votes: "11,340+"
+        }, {
+            id: 47,
+            name: "1GO PLUS",
+            image: "https://i.ibb.co/PzV7FRHT/Screenshot-20260814-063537.jpg",
+            link: "https://1go.plus/4h91q",
+            bonus: "₹180",
+            category: "games",
+            size: "26.0 MB",
+            downloads: "32,450+",
+            votes: "8,100+"
+        }, {
+            id: 48,
+            name: "RUMMY ULTRA",
+            image: "https://i.ibb.co/pjWGb0ty/Screenshot-20260814-034858.jpg",
+            link: "https://www.rummyultraa.com/?dl=5hrw1p",
+            bonus: "₹260",
+            category: "rummy",
+            size: "29.8 MB",
+            downloads: "40,120+",
+            votes: "10,440+"
+        }, {
+            id: 49,
+            name: "789 JACKPOTS",
+            image: "https://i.ibb.co/5WV6Z60y/Screenshot-20260814-063848.jpg",
+            link: "https://join789jackpots1.com/?code=XYUGRMBA44Y&t=1784907944",
+            bonus: "₹450",
+            category: "slots",
+            size: "33.9 MB",
+            downloads: "57,890+",
+            votes: "15,100+"
+        }, {
+            id: 50,
+            name: "JAIHO WIN",
+            image: "https://i.ibb.co/qFmG8b9q/Screenshot-20260814-041444.jpg",
+            link: "https://www.jaihowin12.com/?code=1XNCQVU3XA5&t=1784914695",
+            bonus: "₹360",
+            category: "slots",
+            size: "30.2 MB",
+            downloads: "45,670+",
+            votes: "11,980+"
+        }, {
+            id: 51,
+            name: "SLOTS SPIN",
+            image: "https://i.ibb.co/0pSskjBY/Screenshot-20260814-032904.jpg",
+            link: "https://slotsspinq.com/?code=XJB6LEBYG8R&t=1784908638",
+            bonus: "₹340",
+            category: "slots",
+            size: "31.9 MB",
+            downloads: "48,560+",
+            votes: "12,770+"
+        }, {
+            id: 52,
+            name: "NETA VIP",
+            image: "https://i.ibb.co/yBKhXW7S/Screenshot-20260814-032933.jpg",
+            link: "https://neta3.vip/?code=DR0V69R7BGJ&t=1784915088",
+            bonus: "₹500",
+            category: "vip",
+            size: "35.8 MB",
+            downloads: "71,230+",
+            votes: "18,900+"
+        }, {
+            id: 53,
+            name: "JAIHO 777 VIP",
+            image: "https://i.ibb.co/xVcCbWY/1786669966384.jpg",
+            link: "https://jaiho777agent.com?code=98X2D8Y3QGD&t=1784915217",
+            bonus: "₹480",
+            category: "vip",
+            size: "34.4 MB",
+            downloads: "64,780+",
+            votes: "16,500+"
+        }, {
+            id: 54,
+            name: "DHAN GAME",
+            image: "https://i.ibb.co/JRshnS3z/Screenshot-20260814-033641.jpg",
+            link: "https://www.dhanwin365.com/?code=47TWH18LDKB&t=1784915487",
+            bonus: "₹250",
+            category: "games",
+            size: "29.5 MB",
+            downloads: "38,900+",
+            votes: "9,670+"
+        }, {
+            id: 55,
+            name: "DIWA GAME",
+            image: "https://i.ibb.co/zVvgvPpL/Screenshot-20260814-040014.jpg",
+            link: "https://diwagameshare.club?pid=345550936&channel=2010002&t=pdd2&pkg=com.diwagamewhx.app",
+            bonus: "₹290",
+            category: "games",
+            size: "32.6 MB",
+            downloads: "43,210+",
+            votes: "11,100+"
+        }, {
+            id: 56,
+            name: "BET 54 GAMES",
+            image: "https://i.ibb.co/zWrDwLPt/Screenshot-20260814-033239.jpg",
+            link: "https://www.earntp.com/gold/jm9n7r",
+            bonus: "₹350",
+            category: "betting",
+            size: "31.1 MB",
+            downloads: "52,340+",
+            votes: "13,560+"
+        }, {
+            id: 57,
+            name: "ALL YONO APPS",
+            image: "https://i.ibb.co/Qq9Zn7f/Screenshot-20260814-064907.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹220",
+            category: "apps",
+            size: "33.0 MB",
+            downloads: "46,500+",
+            votes: "12,000+"
+        }, {
+            id: 58,
+            name: "T989 APPS",
+            image: "https://i.ibb.co/bR8bB9qn/Screenshot-20260814-041927.jpg",
+            link: "https://www.earntp.com/gold/jm9n7r",
+            bonus: "₹190",
+            category: "apps",
+            size: "27.2 MB",
+            downloads: "34,670+",
+            votes: "8,770+"
+        }, {
+            id: 59,
+            name: "765 CLUB",
+            image: "https://i.ibb.co/LDF3sXTx/Screenshot-20260814-065302.jpg",
+            link: "https://765club.com/?id=637056077",
+            bonus: "₹300",
+            category: "club",
+            size: "30.9 MB",
+            downloads: "41,890+",
+            votes: "10,550+"
+        }, {
+            id: 60,
+            name: "MKM BET APK",
+            image: "https://i.ibb.co/wZxK5XGr/Screenshot-20260814-032720.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹370",
+            category: "betting",
+            size: "32.8 MB",
+            downloads: "49,780+",
+            votes: "13,100+"
+        }, {
+            id: 61,
+            name: "YN 777",
+            image: "https://i.ibb.co/v6GbHJ95/Screenshot-20260814-040445.jpg",
+            link: "https://www.y729.com/?code=4SWD98JQ8LU&t=1785588919",
+            bonus: "₹410",
+            category: "slots",
+            size: "31.3 MB",
+            downloads: "54,320+",
+            votes: "14,200+"
+        }, {
+            id: 62,
+            name: "SPIN 777",
+            image: "https://i.ibb.co/ccGr69gJ/Screenshot-20260814-033520.jpg",
+            link: "https://spin777cc.com/?code=7V9ZG91PA4R&t=1785589035",
+            bonus: "₹380",
+            category: "slots",
+            size: "30.0 MB",
+            downloads: "50,110+",
+            votes: "12,890+"
+        }, {
+            id: 63,
+            name: "RUMMY 888",
+            image: "https://i.ibb.co/bMgzZNPd/Screenshot-20260814-033315.jpg",
+            link: "https://rummy888vip43.com/?code=7WTEEW87DPM&t=1785589166",
+            bonus: "₹270",
+            category: "rummy",
+            size: "28.3 MB",
+            downloads: "39,450+",
+            votes: "10,010+"
+        }, {
+            id: 64,
+            name: "RUMMY 77",
+            image: "https://i.ibb.co/BXKxwDX/Screenshot-20260814-035041.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹200",
+            category: "rummy",
+            size: "26.9 MB",
+            downloads: "35,780+",
+            votes: "9,200+"
+        }, {
+            id: 65,
+            name: "MQM BET",
+            image: "https://i.ibb.co/nqbdMSST/Screenshot-20260814-035011.jpg",
+            link: "https://4mqmshare.vip?pid=486385025&channel=2010001&pkg=com.mqm.bet",
+            bonus: "₹420",
+            category: "betting",
+            size: "33.2 MB",
+            downloads: "56,340+",
+            votes: "15,000+"
+        }, {
+            id: 66,
+            name: "MAHA GAMES",
+            image: "https://i.ibb.co/nNmMgR25/Screenshot-20260814-034026.jpg",
+            link: "https://good-mahagames.com/?code=J24U9DHRWR8&t=1785589525",
+            bonus: "₹230",
+            category: "games",
+            size: "34.8 MB",
+            downloads: "47,890+",
+            votes: "12,300+"
+        }, {
+            id: 67,
+            name: "IND RUMMY",
+            image: "https://i.ibb.co/BKSZbZMt/Screenshot-20260814-091502.jpg",
+            link: "https://www.earntp.com/m/jm9n7r",
+            bonus: "₹185",
+            category: "rummy",
+            size: "27.4 MB",
+            downloads: "34,220+",
+            votes: "8,660+"
+        }, {
+            id: 68,
+            name: "Hi RUMMY",
+            image: "https://i.ibb.co/27r99T47/Screenshot-20260814-091836.jpg",
+            link: "https://joinhirummy.net/?code=RX35XQBCPC9&t=1785590074",
+            bonus: "₹210",
+            category: "rummy",
+            size: "28.7 MB",
+            downloads: "37,890+",
+            votes: "9,870+"
+        }, {
+            id: 69,
+            name: "JAIHO SPIN",
+            image: "https://i.ibb.co/rfc5rdpv/Screenshot-20260814-041105.jpg",
+            link: "https://18jaihospinpro.com/?code=U3VDD22Q&t=1785590326",
+            bonus: "₹360",
+            category: "slots",
+            size: "30.4 MB",
+            downloads: "46,230+",
+            votes: "11,780+"
+        }, {
+            id: 70,
+            name: "JAIHO RUMMY",
+            image: "https://i.ibb.co/TD7mQ4Qw/Screenshot-20260814-035539.jpg",
+            link: "https://jaihoclud.com/?code=E744HJRF6W7&t=1785590487",
+            bonus: "₹255",
+            category: "rummy",
+            size: "28.1 MB",
+            downloads: "38,560+",
+            votes: "9,940+"
+        }, {
+            id: 71,
+            name: "YONO SLOTS",
+            image: "https://i.ibb.co/TDF7VJ1w/Screenshot-20260814-092416.jpg",
+            link: "https://www.yonoslotsm.com/?code=KU899FV2GFY&t=1785590595",
+            bonus: "₹330",
+            category: "slots",
+            size: "32.5 MB",
+            downloads: "49,670+",
+            votes: "12,560+"
+        }, {
+            id: 72,
+            name: "Diwa Win",
+            image: "https://i.ibb.co/XfXsfDrh/Screenshot-20260814-032430.jpg",
+            link: "https://diwawinshare.tech?pid=528544053&channel=2010002&pkg=com.diwawin002.app",
+            bonus: "₹400",
+            category: "slots",
+            size: "31.7 MB",
+            downloads: "53,780+",
+            votes: "14,100+"
+        }, {
+            id: 73,
+            name: "RUMBLE RUMMY",
+            image: "https://i.ibb.co/S7VgC8Cr/Screenshot-20260814-035804.jpg",
+            link: "https://www.rumblerummy111.vip/?code=VX9H1GEM5EL&t=1785590916",
+            bonus: "₹240",
+            category: "rummy",
+            size: "29.2 MB",
+            downloads: "36,440+",
+            votes: "9,330+"
+        }, {
+            id: 74,
+            name: "YONO VIP",
+            image: "https://i.ibb.co/zTH4HqXT/Screenshot-20260814-041418.jpg",
+            link: "https://uonovipfast.com/?code=3crTKB9H7ND&t=1785591034",
+            bonus: "₹500",
+            category: "vip",
+            size: "34.9 MB",
+            downloads: "69,120+",
+            votes: "17,800+"
+        }];
+
+        // =====================================================
+        // GITHUB-BACKED DATA LOADING
+        // -----------------------------------------------------
+        // The site tries to load "apps.json" (a simple list of
+        // {id, name, image, link} records) from the same folder.
+        // If that file exists and loads successfully, it becomes
+        // the live source of truth — this is the file the Admin
+        // Panel updates. If it can't be loaded (e.g. this page is
+        // opened standalone, or apps.json hasn't been created in
+        // the repo yet), the site falls back to the 74 embedded
+        // apps above, so it always keeps working either way.
+        // =====================================================
+        let appsData = EMBEDDED_APPS_DATA;
+
+        function hashString(str) {
+            let h = 0;
+            for (let i = 0; i < str.length; i++) {
+                h = (h * 31 + str.charCodeAt(i)) >>> 0;
+            }
+            return h;
+        }
+        function deriveCategory(name) {
+            const n = name.toLowerCase();
+            if (n.includes('rummy')) return 'rummy';
+            if (n.includes('slot')) return 'slots';
+            if (n.includes('teen patti') || n.includes('teenpatti')) return 'teenpatti';
+            if (n.includes('bingo')) return 'bingo';
+            if (n.includes('vip')) return 'vip';
+            if (n.includes('club')) return 'club';
+            if (n.includes('bet')) return 'betting';
+            if (n.includes('spin') || n.includes('arcade')) return 'arcade';
+            if (n.includes('apps')) return 'apps';
+            return 'games';
+        }
+        function seededShuffle(arr, seed) {
+            let s = (seed % 2147483647) || 1;
+            const rnd = () => { s = (s * 48271) % 2147483647; return s / 2147483647; };
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(rnd() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+        function deriveFields(rec) {
+            const h = hashString(rec.name + '#' + rec.id);
+            const bonusPool = [50, 60, 70, 75, 82, 90, 100, 110, 120, 130, 150, 175, 200, 225, 250];
+            return {
+                bonus: '₹' + bonusPool[h % bonusPool.length],
+                category: deriveCategory(rec.name),
+                size: (15 + (h % 40) + ((h >> 4) % 10) / 10).toFixed(1) + ' MB',
+                downloads: (10000 + (h % 90000)).toLocaleString() + '+',
+                votes: (1000 + ((h >> 2) % 20000)).toLocaleString() + '+'
+            };
+        }
+
+        async function loadAppsData() {
+            try {
+                const res = await fetch('apps.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('apps.json not found');
+                const minimalList = await res.json();
+                if (!Array.isArray(minimalList) || minimalList.length === 0) throw new Error('empty apps.json');
+                const embeddedById = {};
+                EMBEDDED_APPS_DATA.forEach(a => { embeddedById[a.id] = a; });
+                appsData = minimalList.map(rec => {
+                    const existing = embeddedById[rec.id];
+                    if (existing && existing.image === rec.image && existing.name === rec.name && existing.link === rec.link) {
+                        return existing; // unchanged original app — keep its curated fields
+                    }
+                    // New app added via Admin Panel, or an edited one — derive its display fields.
+                    return { id: rec.id, name: rec.name, image: rec.image, link: rec.link, ...deriveFields(rec) };
+                });
+            } catch (e) {
+                appsData = EMBEDDED_APPS_DATA; // graceful fallback, site still works standalone
+            }
+        }
+
+        // =====================================================
+        // CATEGORY-BASED CONTENT GENERATORS (UNIQUE PER APP)
+        // =====================================================
+        function getCategoryDescription(app) {
+            const n = app.name;
+            const cat = app.category;
+            const bonus = app.bonus;
+            // Base lines – shuffled later
+            const base = [
+                `${n} delivers a premium ${cat}-based experience with smooth performance and engaging mechanics.`,
+                `With ${bonus} sign-up bonus and ₹100 minimum withdrawal, ${n} is built for both casual and dedicated players.`,
+                `The app features a clean interface, fast loading, and responsive controls that work seamlessly on Android devices.`,
+                `Regular updates ensure new content, improved stability, and enhanced security for all users.`,
+                `Whether you're a beginner or a pro, ${n} offers intuitive navigation and clear instructions to get started quickly.`
+            ];
+            const catExtras = {
+                slots: [
+                    `Spin the reels with vibrant visuals, exciting sound effects, and multiple paylines that keep every session fresh.`,
+                    `Progressive jackpots and bonus rounds add extra layers of thrill and reward potential.`,
+                    `The slot mechanics are optimized for smooth reel animations and instant result displays.`
+                ],
+                rummy: [
+                    `Join classic and modern rummy tables with real-time matchmaking and fair play mechanics.`,
+                    `The card shuffling and dealing are algorithmically balanced for a genuine experience.`,
+                    `Multiple variants — from points rummy to pool and deals — cater to every player's preference.`
+                ],
+                teenpatti: [
+                    `Experience the classic Indian card game with stunning visuals and authentic gameplay.`,
+                    `Tables for every stake level, with private and public rooms available.`,
+                    `The interface makes betting, folding, and raising intuitive and responsive.`
+                ],
+                bingo: [
+                    `Enjoy fast-paced bingo sessions with colorful cards and instant number calling.`,
+                    `Multiple bingo rooms with varying ticket prices and prize pools.`,
+                    `The auto-daub feature ensures you never miss a number while you focus on strategy.`
+                ],
+                arcade: [
+                    `Dive into arcade-style action with responsive touch controls and vibrant graphics.`,
+                    `Progressive difficulty levels keep challenges engaging and rewarding.`,
+                    `High-score leaderboards add a competitive edge to every session.`
+                ],
+                betting: [
+                    `Place bets with confidence using real-time odds and transparent transaction logs.`,
+                    `A wide range of betting markets and match types are available.`,
+                    `Secure payment gateways and withdrawal systems ensure smooth financial operations.`
+                ],
+                vip: [
+                    `Premium VIP access with exclusive bonuses, higher withdrawal limits, and priority support.`,
+                    `Personalized dashboards and special events for VIP members only.`,
+                    `Enhanced security features and faster transaction processing.`
+                ],
+                club: [
+                    `Join an exclusive gaming community with club-specific tournaments and rewards.`,
+                    `Club leaderboards, chat features, and special event access.`,
+                    `Membership benefits include bonus multipliers and priority matchmaking.`
+                ],
+                games: [
+                    `A diverse collection of games within one app — from puzzle to strategy and more.`,
+                    `Each game mode offers unique mechanics and objectives for varied gameplay.`,
+                    `Frequent content updates add new games and seasonal challenges.`
+                ],
+                apps: [
+                    `A comprehensive app hub featuring multiple tools and entertainment options.`,
+                    `All apps are optimized for Android with minimal battery and data usage.`,
+                    `Regular updates ensure security patches and new feature rollouts.`
+                ]
+            };
+            const extras = catExtras[cat] || catExtras.games;
+            const combined = seededShuffle([...base, ...extras], hashString(n) + app.id * 7919);
+            return combined.join(' ');
+        }
+
+        function getCategoryAbout(app) {
+            const n = app.name;
+            const cat = app.category;
+            const bonus = app.bonus;
+            const base = [
+                `${n} is a dedicated ${cat} application designed with the modern user in mind.`,
+                `The platform offers a seamless blend of entertainment and functionality, making it a top choice among ${cat} enthusiasts.`,
+                `With a focus on user satisfaction, ${n} provides reliable performance, quick load times, and an intuitive layout.`,
+                `The app's development team prioritizes security, fairness, and transparency in all operations.`,
+                `Regular community feedback is incorporated to refine features and fix issues promptly.`,
+                `${n} supports multiple languages and regional preferences, ensuring a wide reach.`,
+                `The app's lightweight design ensures it runs smoothly even on older Android devices.`
+            ];
+            const catExtras = {
+                slots: [
+                    `Slot enthusiasts will appreciate the diverse themes, from classic fruit machines to modern video slots.`,
+                    `The RNG (Random Number Generator) is certified for fairness, giving every spin an equal chance.`,
+                    `Bonus features include free spins, wild symbols, and interactive mini-games.`
+                ],
+                rummy: [
+                    `Rummy players enjoy fast matchmaking, secure tables, and real-time opponent interactions.`,
+                    `The card dealing system is designed to minimize waiting time and maximize play time.`,
+                    `Practice modes and tutorial levels help new players learn the rules at their own pace.`
+                ],
+                teenpatti: [
+                    `Teen Patti lovers can enjoy multiple table variants, including classic, joker, and muflis.`,
+                    `The social features allow you to play with friends or compete with global players.`,
+                    `Live dealer options and auto-play features add convenience for all skill levels.`
+                ],
+                bingo: [
+                    `Bingo fans can choose from 75-ball, 90-ball, and speed bingo formats.`,
+                    `The chat feature lets you socialize with other players during games.`,
+                    `Special jackpot rooms offer higher stakes and bigger rewards.`
+                ],
+                arcade: [
+                    `Arcade modes are designed for quick, satisfying gameplay sessions.`,
+                    `Touch controls are optimized for precision and responsiveness.`,
+                    `Leaderboards and achievements provide long-term engagement goals.`
+                ],
+                betting: [
+                    `Betting options cover a wide spectrum of sports and events.`,
+                    `Real-time odds updates and live stats keep you informed.`,
+                    `Secure deposit and withdrawal methods ensure peace of mind.`
+                ],
+                vip: [
+                    `VIP members receive exclusive access to high-stakes rooms and premium events.`,
+                    `Dedicated account managers and faster withdrawal processing are standard.`,
+                    `Special VIP tournaments with larger prize pools are held regularly.`
+                ],
+                club: [
+                    `Club features foster community interaction and friendly competition.`,
+                    `Members can create or join clubs based on their gaming interests.`,
+                    `Club-exclusive bonuses and events add extra value for members.`
+                ],
+                games: [
+                    `The game library is constantly expanding with new titles and genres.`,
+                    `Each game is tested for quality, performance, and enjoyment before release.`,
+                    `Cross-game rewards and achievements create a unified progression system.`
+                ],
+                apps: [
+                    `The app collection is curated to include the most popular and useful tools.`,
+                    `Each app is verified for safety and performance on Android devices.`,
+                    `Regular updates keep all apps compatible with the latest OS versions.`
+                ]
+            };
+            const extras = catExtras[cat] || catExtras.games;
+            const combined = seededShuffle([...base, ...extras], hashString(n) + app.id * 3299);
+            return combined.join(' ');
+        }
+
+        function getBestInfoItems(app) {
+            const n = app.name;
+            const cat = app.category;
+            const bonus = app.bonus;
+            const items = [{
+                title: "Gameplay & Core Mechanics",
+                icon: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>`,
+                content: `${n} offers a refined ${cat} experience with smooth, responsive mechanics. The game flow is designed to keep you engaged from the first interaction, with intuitive controls and real-time feedback. Whether you're spinning reels, playing cards, or placing bets, every action feels immediate and satisfying. The app's engine is optimized for low latency, ensuring that your inputs are registered instantly.`
+            }, {
+                title: "Visual Design & Interface",
+                icon: `<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm1-11h-2v6h2V8zm0 8h-2v2h2v-2z"/></svg>`,
+                content: `The visual design of ${n} is modern and clean, with a focus on readability and ease of use. High-resolution graphics, smooth animations, and a well-organized layout make navigation a breeze. The color scheme is carefully chosen to reduce eye strain during extended sessions, while the interface adapts gracefully to different screen sizes — from compact phones to larger tablets.`
+            }, {
+                title: "Security & Fair Play",
+                icon: `<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5L12 1zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>`,
+                content: `Security is a top priority for ${n}. The app employs robust encryption protocols to protect user data and financial transactions. All games use certified Random Number Generators (RNGs) to ensure outcomes are fair and unpredictable. Regular third-party audits and compliance checks are conducted to maintain trust and transparency.`
+            }, {
+                title: "User Experience & Support",
+                icon: `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>`,
+                content: `${n} is built with the user in mind, featuring a streamlined onboarding process, clear tutorials, and accessible help sections. Customer support is responsive and knowledgeable, ready to assist with any queries. The app also includes social features like leaderboards and chat, fostering a vibrant community of players who share tips and celebrate wins together.`
+            }];
+            // Shuffle for variety, seeded per app so it's stable across reloads
+            const shuffledItems = seededShuffle(items, hashString(n) + app.id * 5081);
+            return shuffledItems;
+        }
+
+        function getReviews(app) {
+            const n = app.name;
+            const cat = app.category;
+            const namePool = ['Arjun M.', 'Priya K.', 'Rohit S.', 'Ananya R.', 'Vikram D.', 'Sneha K.', 'Karan M.', 'Divya I.', 'Sameer K.', 'Fatima S.'];
+            // Generate unique review texts per app by using its name and category
+            const reviewTexts = [
+                `The gameplay in ${n} is incredibly smooth. I've been playing for weeks and the experience keeps getting better. The ${cat} mechanics are top-notch.`,
+                `I love how ${n} handles the ${cat} format. The interface is clean, the moves are responsive, and I never experience lag. Definitely recommended.`,
+                `${n} has one of the best UIs I've seen in a ${cat} app. Everything is well-organized, and the animations are beautiful. It makes playing a joy.`,
+                `The navigation in ${n} is so intuitive. I could find everything I needed within minutes of installing. The ${cat} layout is perfect for quick sessions.`,
+                `The graphics in ${n} are stunning. The visual quality is on par with premium games, and the ${cat} elements are rendered beautifully.`,
+                `I'm impressed by the visual detail in ${n}. The ${cat} graphics are crisp, and the overall presentation feels polished and professional.`,
+                `Controls in ${n} are super responsive. Every tap and swipe registers perfectly, which is crucial for ${cat} games. The feedback is instant.`,
+                `I've tried many ${cat} apps, but ${n} has the best controls. They're precise, smooth, and make the gameplay feel effortless.`,
+                `The support team behind ${n} is amazing. They resolved my query within hours and were super helpful. Great to see such dedication.`,
+                `I had a minor issue with ${n} and the support team was on it immediately. They were courteous, professional, and fixed everything fast. Great service!`
+            ];
+            // Shuffle (seeded per app) and pick first 5, with a per-app shuffled reviewer order too
+            const selected = seededShuffle(reviewTexts, hashString(n) + app.id * 6151).slice(0, 5);
+            const names = seededShuffle(namePool, hashString(n) + app.id * 2477).slice(0, 5);
+            const reviews = [];
+            for (let i = 0; i < 5; i++) {
+                reviews.push({
+                    name: names[i],
+                    avatar: names[i].charAt(0),
+                    text: selected[i] || `Great experience with ${n}!`,
+                    rating: 4 + (i % 2) // 4 or 5 stars
+                });
+            }
+            return reviews;
+        }
+
+        // =====================================================
+        // RENDER FUNCTIONS
+        // =====================================================
+
+        const GIFT_ICON = `<svg class="feature-icon gift-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 10h-1.2A3.3 3.3 0 0 0 16 4.2c-1.05 0-2.2.6-3.2 2.05L12 7.35l-.8-1.1C10.2 4.8 9.05 4.2 8 4.2A3.3 3.3 0 0 0 5.2 10H4a2 2 0 0 0-2 2v2h8v7H5a1 1 0 0 1-1-1v-5H2v5a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-5h-2v5a1 1 0 0 1-1 1h-5v-7h8v-2a2 2 0 0 0-2-2ZM8 10a1.3 1.3 0 1 1 1.1-2c.38.54.72 1.15.9 2H8Zm8 0h-2.05c.18-.85.52-1.46.9-2A1.3 1.3 0 1 1 16 10Zm-4 11h-2v-7h2v7Z"/></svg>`;
+        const WALLET_ICON = `<svg class="feature-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 7V5a2 2 0 0 0-2-2H6a4 4 0 0 0-4 4v10a4 4 0 0 0 4 4h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-2-2v2H6a2 2 0 0 1 0-4h12v2Zm2 12h-3a2 2 0 0 1 0-4h3v4Zm-3-3a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"/></svg>`;
+
+        function renderHome() {
+            const grid = document.getElementById('homeGrid');
+            grid.innerHTML = '';
+            appsData.forEach((app, index) => {
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.innerHTML = `
+                    <div class="badge">${app.id}</div>
+                    <div class="card-img">
+                        <img src="${app.image}" alt="${app.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%231a212c%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%239aa3b0%22 font-size=%2212%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                    </div>
+                    <div class="card-name">${app.name}</div>
+                    <div class="card-bonus">
+                        <svg class="feature-icon gift-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 10h-1.2A3.3 3.3 0 0 0 16 4.2c-1.05 0-2.2.6-3.2 2.05L12 7.35l-.8-1.1C10.2 4.8 9.05 4.2 8 4.2A3.3 3.3 0 0 0 5.2 10H4a2 2 0 0 0-2 2v2h8v7H5a1 1 0 0 1-1-1v-5H2v5a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-5h-2v5a1 1 0 0 1-1 1h-5v-7h8v-2a2 2 0 0 0-2-2ZM8 10a1.3 1.3 0 1 1 1.1-2c.38.54.72 1.15.9 2H8Zm8 0h-2.05c.18-.85.52-1.46.9-2A1.3 1.3 0 1 1 16 10Zm-4 11h-2v-7h2v7Z"/></svg>
+                        Sign Up Bonus ${app.bonus}
+                    </div>
+                    <div class="card-withdrawal">
+                        <svg class="feature-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 7V5a2 2 0 0 0-2-2H6a4 4 0 0 0-4 4v10a4 4 0 0 0 4 4h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-2-2v2H6a2 2 0 0 1 0-4h12v2Zm2 12h-3a2 2 0 0 1 0-4h3v4Zm-3-3a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"/></svg>
+                        Min. Withdrawal ₹100
+                    </div>
+                    <button class="download-btn" data-id="${app.id}">Download</button>
+                `;
+                // Click card to go to details
+                card.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON') return;
+                    showDetails(app.id);
+                });
+                // Download button
+                card.querySelector('.download-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showDetails(app.id);
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        function showDetails(id) {
+            const app = appsData.find(a => a.id === id);
+            if (!app) return;
+            // Hide all pages, show details
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-details').classList.add('active');
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderDetails(app);
+        }
+
+        function renderDetails(app) {
+            const container = document.getElementById('detailsContent');
+            const cat = app.category;
+            const desc = getCategoryDescription(app);
+            const aboutText = getCategoryAbout(app);
+            const bestItems = getBestInfoItems(app);
+            const reviews = getReviews(app);
+            const related = appsData.filter(a => a.id !== app.id);
+
+            // Build reviews HTML
+            let reviewsHTML = '';
+            reviews.forEach((r, idx) => {
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                reviewsHTML += `
+                    <div class="review-card">
+                        <div class="stars">${stars}</div>
+                        <div class="r-text">"${r.text}"</div>
+                        <div class="r-divider"></div>
+                        <div class="r-user">
+                            <div class="r-avatar">${r.avatar}</div>
+                            <div>
+                                <div class="r-name">${r.name}</div>
+                                <div class="r-verified">
+                                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5L12 1zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                                    Verified Gamer
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Build best info HTML
+            let bestHTML = '';
+            bestItems.forEach((item, idx) => {
+                bestHTML += `
+                    <div class="best-item" data-best="${idx}">
+                        <div class="best-toggle">
+                            <span class="left-icon">
+                                ${item.icon}
+                                ${item.title}
+                            </span>
+                            <span class="icon-wrap">
+                                <svg class="expand-icon" viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                                <svg class="collapse-icon" viewBox="0 0 24 24"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>
+                            </span>
+                        </div>
+                        <div class="best-content">${item.content}</div>
+                    </div>
+                `;
+            });
+
+            // Build related apps HTML
+            let relatedHTML = '';
+            related.forEach(rel => {
+                relatedHTML += `
+                    <div class="related-card" data-id="${rel.id}">
+                        <div class="rc-img">
+                            <img src="${rel.image}" alt="${rel.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%231a212c%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%239aa3b0%22 font-size=%2210%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="rc-name">${rel.name}</div>
+                        <div class="rc-bonus">${GIFT_ICON}Sign Up Bonus ${rel.bonus}</div>
+                        <div class="rc-withdrawal">${WALLET_ICON}Min. Withdrawal ₹100</div>
+                        <button class="rc-btn" data-id="${rel.id}">Download</button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <!-- TOP SECTION -->
+                <div class="details-top">
+                    <div class="dt-row">
+                        <div class="dt-img">
+                            <img src="${app.image}" alt="${app.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%231a212c%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%239aa3b0%22 font-size=%2210%22 font-family=%22sans-serif%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="dt-info">
+                            <div class="dt-name">${app.name}</div>
+                            <div class="dt-bonus">
+                                <svg class="feature-icon gift-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 10h-1.2A3.3 3.3 0 0 0 16 4.2c-1.05 0-2.2.6-3.2 2.05L12 7.35l-.8-1.1C10.2 4.8 9.05 4.2 8 4.2A3.3 3.3 0 0 0 5.2 10H4a2 2 0 0 0-2 2v2h8v7H5a1 1 0 0 1-1-1v-5H2v5a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-5h-2v5a1 1 0 0 1-1 1h-5v-7h8v-2a2 2 0 0 0-2-2ZM8 10a1.3 1.3 0 1 1 1.1-2c.38.54.72 1.15.9 2H8Zm8 0h-2.05c.18-.85.52-1.46.9-2A1.3 1.3 0 1 1 16 10Zm-4 11h-2v-7h2v7Z"/></svg>
+                                Sign Up Bonus ${app.bonus}
+                            </div>
+                            <div class="dt-withdrawal">
+                                <svg class="feature-icon wallet-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 7V5a2 2 0 0 0-2-2H6a4 4 0 0 0-4 4v10a4 4 0 0 0 4 4h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-2-2v2H6a2 2 0 0 1 0-4h12v2Zm2 12h-3a2 2 0 0 1 0-4h3v4Zm-3-3a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"/></svg>
+                                Min. Withdrawal ₹100
+                            </div>
+                            <div class="dt-stats">
+                                <span>
+                                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                                    Downloads: <strong>${app.downloads}</strong>
+                                </span>
+                                <span>
+                                    <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                                    Size: <strong>${app.size}</strong>
+                                </span>
+                                <span>
+                                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    Votes: <strong>${app.votes}</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dt-download-wrap">
+                        <a href="${app.link}" target="_blank" rel="noopener noreferrer" class="download-btn">⬇ Download ${app.name}</a>
+                    </div>
+                </div>
+
+                <!-- INFO BAG 1 -->
+                <div class="info-bag">
+                    <div class="bag-head">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        About ${app.name}
+                    </div>
+                    <div class="bag-body">
+                        <p>${desc}</p>
+                    </div>
+                </div>
+
+                <!-- INFO BAG 2 (About) -->
+                <div class="info-bag">
+                    <div class="bag-head">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        More About ${app.name}
+                    </div>
+                    <div class="bag-body">
+                        <p>${aboutText}</p>
+                    </div>
+                </div>
+
+                <!-- RELATED APPS -->
+                <div class="related-head">All Other Apps (${related.length})</div>
+                <div class="related-grid">${relatedHTML}</div>
+
+                <!-- BEST INFORMATION -->
+                <div class="best-head">Best Information</div>
+                <div id="bestContainer">${bestHTML}</div>
+
+                <!-- REVIEWS -->
+                <div class="reviews-head">Ratings & Player Reviews</div>
+                <div class="reviews-wrap" id="reviewsWrap">
+                    ${reviewsHTML}
+                </div>
+            `;
+
+            // Attach related card click events
+            document.querySelectorAll('.related-card').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON') return;
+                    const id = parseInt(el.dataset.id);
+                    if (id) showDetails(id);
+                });
+                const btn = el.querySelector('.rc-btn');
+                if (btn) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const id = parseInt(el.dataset.id);
+                        if (id) showDetails(id);
+                    });
+                }
+            });
+
+            // Attach best item toggle
+            document.querySelectorAll('.best-item').forEach(item => {
+                const toggle = item.querySelector('.best-toggle');
+                toggle.addEventListener('click', () => {
+                    item.classList.toggle('open');
+                });
+            });
+
+            // Reviews horizontal scroll - touch support already via CSS
+            const wrap = document.getElementById('reviewsWrap');
+            if (wrap) {
+                let isDown = false;
+                let startX = 0;
+                let scrollLeft = 0;
+                wrap.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    startX = e.pageX - wrap.offsetLeft;
+                    scrollLeft = wrap.scrollLeft;
+                });
+                wrap.addEventListener('mouseleave', () => { isDown = false; });
+                wrap.addEventListener('mouseup', () => { isDown = false; });
+                wrap.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - wrap.offsetLeft;
+                    const walk = (x - startX) * 1.5;
+                    wrap.scrollLeft = scrollLeft - walk;
+                });
+            }
+        }
+
+        // =====================================================
+        // NAVIGATION
+        // =====================================================
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(`page-${pageId}`);
+            if (target) target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            closeMenu();
+        }
+
+        // Menu controls
+        const menuToggle = document.getElementById('menuToggle');
+        const menuClose = document.getElementById('menuClose');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const sideMenu = document.getElementById('sideMenu');
+
+        function openMenu() {
+            sideMenu.classList.add('open');
+            menuOverlay.classList.add('active');
+        }
+
+        function closeMenu() {
+            sideMenu.classList.remove('open');
+            menuOverlay.classList.remove('active');
+        }
+
+        menuToggle.addEventListener('click', openMenu);
+        menuClose.addEventListener('click', closeMenu);
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Menu items
+        document.querySelectorAll('.menu-item[data-page]').forEach(item => {
+            item.addEventListener('click', () => {
+                const page = item.dataset.page;
+                navigateTo(page);
+            });
+        });
+
+        // Back button on details
+        document.getElementById('detailsBack').addEventListener('click', () => {
+            navigateTo('home');
+        });
+
+        // =====================================================
+        // INIT
+        // =====================================================
+
+        (async function init() {
+            await loadAppsData();
+            renderHome();
+
+            // YONO RUMMY detail page is the initial page in this file.
+            // Home from the menu/back button still opens the original 74-app home page.
+            const params = new URLSearchParams(window.location.search);
+            const appId = params.get('app');
+            const initialId = appId ? parseInt(appId, 10) : 15;
+            if (appsData.some(a => a.id === initialId)) {
+                setTimeout(() => showDetails(initialId), 100);
+            }
+        })();
+
+        // Expose showDetails globally for related cards etc.
+        window.showDetails = showDetails;
+        window.navigateTo = navigateTo;
+
+        console.log('✅ GameHub loaded — 74 original apps/games');
+    
+        // Telegram: hide while the page is scrolling, then return to its fixed right-side position when scrolling stops.
+        (function () {
+            const telegram = document.getElementById('telegramFloat');
+            if (!telegram) return;
+            let scrollTimer;
+            window.addEventListener('scroll', function () {
+                telegram.classList.add('hide-telegram');
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(function () {
+                    telegram.classList.remove('hide-telegram');
+                }, 420);
+            }, { passive: true });
+        })();
+</script>
+
+</body>
+</html>
